@@ -6,60 +6,69 @@ const UserLogin = (props) => {
 
     const sampleEmail = ["naveen@gmail.com", "dnaveen@gmail.com"];
 
-    const [mailErr, setmailErr] = useState({});
-    const [passwordErr, setpasswordErr] = useState({});
+    const [errMsg, setErrMsg] = useState({
+        mailErr: "",
+        passwordErr: ""
+    });
     const [isShow, setShow] = useState(0);
 
-    const clickHandler = (event) => {
-        event.preventDefault();
-        dispatch({ type: "increment" });
-    }
     const click = () => {
-        const mailErr = {};
         const reg = /@gmail.com$/gi;
 
         if (props.userDetails.email.length < 1) {
-            mailErr.msg = "Pls enter Email";
+            setErrMsg({...errMsg,
+                mailErr:"Pls enter your gmail"
+            })
             props.checkMail(0);
         }
         else {
             if (!reg.test(props.userDetails.email)) {
-                mailErr.msg = "Pls enter valid gmail";
+                setErrMsg({...errMsg,
+                    mailErr:"Pls enter valid gmail"
+                })
                 props.checkMail(0);
             }
             else {
                 if (sampleEmail.includes(props.userDetails.email)) {
-                    mailErr.msg = "Look this mail is already exist"
+                    setErrMsg({...errMsg,
+                        mailErr:"Look this mail is already exist"
+                    })
                     props.checkMail(0);
                 }
                 else {
+                    setErrMsg({...errMsg,
+                        mailErr:""
+                    })
                     props.checkMail(1);
 
                 }
 
             }
         }
-        setmailErr(mailErr);
-
     }
     const click1 = () => {
-        const passwordErr = {};
         const regPass = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#\$%\^&\*])(?=.{8,})")
 
         if (props.userDetails.password.length < 1) {
-            passwordErr.msg = "Pls enter password";
+            setErrMsg({...errMsg,
+                passwordErr:"Pls enter password"
+            })
             props.checkPass(0);
         }
         else if (props.userDetails.password.length >= 1) {
             if (!regPass.test(props.userDetails.password)) {
-                passwordErr.msg = "It is too weak";
+                setErrMsg({...errMsg,
+                    passwordErr:"It is too weak"
+                })
                 props.checkPass(0);
             }
             else {
+                setErrMsg({...errMsg,
+                    passwordErr:""
+                })
                 props.checkPass(1);
             }
         }
-        setpasswordErr(passwordErr);
     }
     const regex1 = /[a-z]/g;
     const case1 = regex1.test(props.userDetails.password);
@@ -88,6 +97,7 @@ const UserLogin = (props) => {
             setShow(1);
         }
     }
+
     return (
         <>
             <div className="row" style={{ marginTop: "120px" }}>
@@ -101,22 +111,24 @@ const UserLogin = (props) => {
                         <div className="col-sm-10">
                             <input type="email" className="form-control" name='email' onBlur={click} value={props.userDetails.email} placeholder="Your e-mail" onChange={props.changeHandler} />
                         </div>
-                        <p className="text-danger">{mailErr.msg}</p>
+                        <p className="text-danger">{errMsg.mailErr===""?null:<i className="bi bi-exclamation-circle-fill"/>}{errMsg.mailErr}</p>
                     </div>
                     <div className="mb-3">
                         <div className="row">
-                            <div className="col-9">
+                            <div className="col-8">
                         <label className="form-label">password</label>
                         </div>
                         <div className="col-2">
-                        <div onClick={showpassword} ><i className="bi bi-eye-fill" ></i></div>
+                            <div>
+                            <i className="bi bi-eye-fill" style={{position:"absolute",top:"345px"}} onClick={showpassword}> </i>
+                            </div>
                         </div>
+
                         </div>
                         <div className="col-sm-10">
-                            <input type={isShow ? "text" : "password"} className="form-control" name='password' onBlur={click1} value={props.userDetails.password} placeholder="your password" onChange={props.changeHandler} />
-                            {/* <button className="btn btn-primary" onClick={showpassword}>Clickme</button> */}
+                            <input type={isShow ? "text" : "password"} className="form-control" name='password' onBlur={click1} value={props.userDetails.password} placeholder="your password" onChange={props.changeHandler} ></input> 
                         </div>
-                        <p className="text-danger">{passwordErr.msg}</p>
+                        <p className="text-danger">{errMsg.passwordErr===""?null:<i className="bi bi-exclamation-circle-fill"/>}{errMsg.passwordErr}</p>
                         <div style={{ fontSize: "13px" }}>
                             <p style={s}>{props.userDetails.password.length}/8 characters,</p>
                             <p style={s1}>lowercase letters (a-z),</p>
@@ -132,7 +144,7 @@ const UserLogin = (props) => {
                         </div>
                         <div className="col-6">
                             <div className="next">
-                                <button type="submit" disabled={!props.valid.valid1 || !props.valid.valid2} className="btn btn-primary" onClick={clickHandler}>Continue</button>
+                                <button type="submit" disabled={!props.valid.valid1 || !props.valid.valid2} className="btn btn-primary" onClick={() => dispatch({ type: "increment" })}>Continue</button>
                             </div>
                         </div>
                     </div>

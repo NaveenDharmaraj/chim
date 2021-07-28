@@ -6,32 +6,63 @@ const UserName = (props) => {
     const dispatch = useDispatch();
 
 
-    const [firstNameErr, setfirstNameErr] = useState({});
-    const [lastNameErr, setlastNameErr] = useState({});
+    const [errMsg, setErrMsg] = useState({
+        firstNameErr: "",
+        lastNameErr: ""
+    });
+
+    const formValidate = () => {
+        if (props.userDetails.firstName.length < 1) {
+            setErrMsg({
+                ...errMsg,
+                firstNameErr: "Pls enter your first name"
+            })
+        }
+        else if (props.userDetails.firstName.length < 2) {
+            setErrMsg({
+                ...errMsg,
+                firstNameErr: "First Name should have minimum 2 characters"
+            })
+        }
+        else if (props.userDetails.firstName.length >= 30) {
+            setErrMsg({
+                ...errMsg,
+                firstNameErr: "First Name cannot have more than 30 characters"
+            })
+        }
+        else {
+            setErrMsg({
+                ...errMsg,
+                firstNameErr: ""
+            })
+        }
+    }
+
+    const formValidate1 = () => {
+        if (props.userDetails.lastName.length < 1) {
+            setErrMsg({
+                ...errMsg,
+                lastNameErr: "pls enter your last name"
+            })
+        }
+        else if (props.userDetails.lastName.length >= 30) {
+            setErrMsg({
+                ...errMsg,
+                lastNameErr: "Last Name cannot have more than 30 characters"
+            })
+        }
+        else {
+            setErrMsg({
+                ...errMsg,
+                lastNameErr: ""
+            })
+        }
+    }
+
 
     const onSubmit = (event) => {
         event.preventDefault();
         dispatch({ type: "increment" });
-    }
-
-    const formValidate = () => {
-        const firstNameErr = {};
-
-        if (props.userDetails.firstName.length < 1) {
-            firstNameErr.msg = "Pls enter your first name";
-        }
-        else if (props.userDetails.firstName.length < 2) {
-            firstNameErr.msg = "First Name should have minimum 2 characters"
-        }
-        setfirstNameErr(firstNameErr);
-    }
-    const formValidate1 = () => {
-        const lastNameErr = {};
-
-        if (props.userDetails.lastName.length < 1) {
-            lastNameErr.msg = "pls enter your last name";
-        }
-        setlastNameErr(lastNameErr);
     }
 
     return (
@@ -49,16 +80,16 @@ const UserName = (props) => {
                             <div className="col-sm-10">
                                 <input type="text" className="form-control" value={props.userDetails.firstName} name="firstName" onBlur={formValidate} placeholder="Your first name" onChange={props.changeHandler} />
                             </div>
-                            <p className="text-danger">{firstNameErr.msg}</p>
+                            <p className="text-danger">{errMsg.firstNameErr === "" ? null : <i className="bi bi-exclamation-circle-fill"></i>}{errMsg.firstNameErr}</p>
                         </div>
                         <div className="mb-3">
                             <label className="form-label">Last Name</label>
                             <div className="col-sm-10">
                                 <input type="text" className="form-control" value={props.userDetails.lastName} name="lastName" onBlur={formValidate1} placeholder="Your last name" onChange={props.changeHandler} />
                             </div>
-                            <p className="text-danger">{lastNameErr.msg}</p>
+                            <p className="text-danger">{errMsg.lastNameErr === "" ? null : <i className="bi bi-exclamation-circle-fill"></i>}{errMsg.lastNameErr}</p>
                         </div>
-                        <button type="submit" disabled={props.userDetails.firstName.length < 2 || !props.userDetails.lastName} onClick={onSubmit} className="btn btn-primary" style={{ marginTop: "40px" }}>Continue</button>
+                        <button type="submit" disabled={props.userDetails.firstName.length < 2 || !props.userDetails.lastName} onClick={onSubmit} className="btn btn-primary">Continue</button>
                     </form>
                 </div>
             </div>
